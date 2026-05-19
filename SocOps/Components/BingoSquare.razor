@@ -6,10 +6,17 @@
     class="@GetCssClasses()"
     aria-pressed="@Square.IsMarked"
     aria-label="@(Square.IsFreeSpace ? "Free space" : Square.Text)">
-    <span class="wrap-break-word hyphens-auto">@Square.Text</span>
-    @if (Square.IsMarked && !Square.IsFreeSpace)
+    @if (Square.IsFreeSpace)
     {
-        <span class="absolute top-0.5 right-0.5 text-green-600 text-xs">✓</span>
+        <span style="font-size: 1.25rem;" aria-hidden="true">&#9733;</span>
+    }
+    else
+    {
+        <span>@Square.Text</span>
+        @if (Square.IsMarked)
+        {
+            <span style="position: absolute; top: 3px; right: 4px; font-size: 0.55rem; font-weight: 900;">&#10003;</span>
+        }
     }
 </button>
 
@@ -25,16 +32,9 @@
 
     private string GetCssClasses()
     {
-        var baseClasses = "relative flex items-center justify-center p-1 text-center border border-gray-300 rounded transition-all duration-150 select-none min-h-[60px] text-xs leading-tight";
-
-        var stateClasses = Square.IsMarked
-            ? IsWinning
-                ? "bg-amber-200 border-amber-400 text-amber-900"
-                : "bg-marked border-marked-border text-green-800"
-            : "bg-white text-gray-700 active:bg-gray-100";
-
-        var freeSpaceClasses = Square.IsFreeSpace ? "font-bold text-sm" : "";
-
-        return $"{baseClasses} {stateClasses} {freeSpaceClasses}";
+        if (Square.IsFreeSpace) return "sq-base sq-free";
+        if (IsWinning)          return "sq-base sq-winning";
+        if (Square.IsMarked)    return "sq-base sq-marked";
+        return "sq-base sq-normal";
     }
 }

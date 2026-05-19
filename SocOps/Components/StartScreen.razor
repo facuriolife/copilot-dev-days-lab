@@ -1,21 +1,33 @@
-<div class="flex flex-col items-center justify-center min-h-full p-6 bg-gray-50">
-    <div class="text-center max-w-sm">
-        <h1 class="text-4xl font-bold text-gray-900 mb-2">Soc Ops</h1>
-        <p class="text-lg text-gray-600 mb-8">Social Bingo</p>
+<div class="paper-bg min-h-full flex flex-col items-center justify-center p-6">
+    <div class="card-paper shadow-cut-lg max-w-sm w-full p-8 relative">
+        <div class="stamp-tag absolute" style="top: -12px; right: 20px;">Social Bingo</div>
 
-        <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200 mb-8">
-            <h2 class="font-semibold text-gray-800 mb-3">How to play</h2>
-            <ul class="text-left text-gray-600 text-sm space-y-2">
-                <li>• Find people who match the questions</li>
-                <li>• Tap a square when you find a match</li>
-                <li>• Get 5 in a row to win!</li>
-            </ul>
+        <h1 class="font-display font-black text-ink tracking-tight"
+            style="font-size: 3.5rem; line-height: 1; margin-bottom: 0.25rem;">Soc Ops</h1>
+        <p class="uppercase tracking-widest text-ink-muted"
+           style="font-size: 0.7rem; margin-bottom: 2rem;">Find your people. Get five in a row.</p>
+
+        <div class="card-inset p-4" style="margin-bottom: 2rem;">
+            <p class="uppercase tracking-widest text-ink-muted"
+               style="font-size: 0.65rem; font-weight: 600; margin-bottom: 0.75rem;">How to play</p>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem;">
+                <li style="display: flex; gap: 0.75rem; font-size: 0.8rem; color: var(--color-ink);">
+                    <span style="min-width: 1.5rem; font-weight: 700; color: var(--color-ink-muted);">01</span>
+                    <span>Find people who match the questions</span>
+                </li>
+                <li style="display: flex; gap: 0.75rem; font-size: 0.8rem; color: var(--color-ink);">
+                    <span style="min-width: 1.5rem; font-weight: 700; color: var(--color-ink-muted);">02</span>
+                    <span>Tap a square when you find a match</span>
+                </li>
+                <li style="display: flex; gap: 0.75rem; font-size: 0.8rem; color: var(--color-ink);">
+                    <span style="min-width: 1.5rem; font-weight: 700; color: var(--color-ink-muted);">03</span>
+                    <span>Get 5 in a row to win!</span>
+                </li>
+            </ol>
         </div>
 
-        <button
-            @onclick="OnStart"
-            class="w-full bg-accent text-white font-semibold py-4 px-8 rounded-lg text-lg active:bg-accent-light transition-colors">
-            Start Game
+        <button @onclick="OnStart" class="btn-primary w-full">
+            Start Game &rarr;
         </button>
     </div>
 </div>

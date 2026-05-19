@@ -1,13 +1,27 @@
-<div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-xl p-6 max-w-xs w-full text-center shadow-xl animate-[bounce_0.5s_ease-out]">
-        <div class="text-5xl mb-4">🎉</div>
-        <h2 class="text-3xl font-bold text-amber-500 mb-2">BINGO!</h2>
-        <p class="text-gray-600 mb-6">You completed a line!</p>
+<div class="fixed inset-0 flex items-center justify-center p-6 z-50"
+     style="background: rgba(28, 27, 24, 0.78);">
+    <div class="card-paper shadow-cut-lg max-w-xs w-full p-8 text-center animate-modal-pop">
 
-        <button
-            @onclick="OnDismiss"
-            class="w-full bg-accent text-white font-semibold py-3 px-6 rounded-lg active:bg-accent-light transition-colors">
-            Keep Playing
+        <!-- Circular stamp badge -->
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+            <div style="width: 5rem; height: 5rem; border-radius: 50%;
+                        border: 3px solid var(--color-ink);
+                        background: var(--color-stamp-red);
+                        display: flex; align-items: center; justify-content: center;
+                        box-shadow: 3px 3px 0 var(--color-ink);">
+                <span style="font-size: 2rem; color: #fff;" aria-hidden="true">&#9733;</span>
+            </div>
+        </div>
+
+        <h2 class="font-display font-black text-ink tracking-tight"
+            style="font-size: 3rem; line-height: 1; margin-bottom: 0.25rem;">BINGO!</h2>
+        <p class="uppercase tracking-widest text-ink-muted"
+           style="font-size: 0.65rem; margin-bottom: 1.5rem;">You completed a line!</p>
+
+        <div style="border-top: 2px dashed var(--color-ink); opacity: 0.35; margin-bottom: 1.5rem;"></div>
+
+        <button @onclick="OnDismiss" class="btn-primary w-full">
+            Keep Playing &rarr;
         </button>
     </div>
 </div>

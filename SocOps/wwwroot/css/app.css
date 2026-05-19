@@ -1,3 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap');
+
+:root {
+    --color-parchment: #F0E9D8;
+    --color-card: #FFFDF7;
+    --color-ink: #1C1B18;
+    --color-ink-muted: #6B6760;
+    --color-stamp-yellow: #F5C842;
+    --color-stamp-red: #CC3B25;
+    --color-stamp-green: #2E7D52;
+    --color-shadow-cut: #1C1B18;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+}
+
 html,
 body,
 #app {
@@ -6,7 +21,7 @@ body,
 }
 
 body {
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family: var(--font-body);
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -226,3 +241,196 @@ button:disabled {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
+
+/* ================================================================
+   PAPER CUTOUTS THEME
+   ================================================================ */
+
+/* --- Surfaces --- */
+.paper-bg        { background-color: var(--color-parchment); }
+.bg-card         { background-color: var(--color-card); }
+.bg-ink          { background-color: var(--color-ink); }
+.bg-parchment    { background-color: var(--color-parchment); }
+.bg-stamp-yellow { background-color: var(--color-stamp-yellow); }
+.bg-stamp-red    { background-color: var(--color-stamp-red); }
+.bg-stamp-green  { background-color: var(--color-stamp-green); }
+
+.card-paper {
+    background-color: var(--color-card);
+    border: 2px solid var(--color-ink);
+    border-radius: 3px;
+}
+
+.card-inset {
+    background-color: rgba(28, 27, 24, 0.05);
+    border: 1.5px dashed var(--color-ink);
+    border-radius: 2px;
+}
+
+/* --- Shadows --- */
+.shadow-cut-sm { box-shadow: 2px 2px 0 var(--color-shadow-cut); }
+.shadow-cut    { box-shadow: 4px 4px 0 var(--color-shadow-cut); }
+.shadow-cut-lg { box-shadow: 6px 6px 0 var(--color-shadow-cut); }
+
+/* --- Borders --- */
+.border-ink       { border-color: var(--color-ink); }
+.border-b-ink     { border-bottom: 2px solid var(--color-ink); }
+.border-t-ink     { border-top: 2px solid var(--color-ink); }
+.border-ink-solid { border: 2px solid var(--color-ink); }
+
+/* --- Text --- */
+.text-ink       { color: var(--color-ink); }
+.text-ink-muted { color: var(--color-ink-muted); }
+.text-parchment { color: var(--color-parchment); }
+.text-stamp-red { color: var(--color-stamp-red); }
+
+/* --- Typography --- */
+.font-display    { font-family: var(--font-display); }
+.font-black      { font-weight: 900; }
+.uppercase       { text-transform: uppercase; }
+.tracking-widest { letter-spacing: 0.2em; }
+.tracking-tight  { letter-spacing: -0.025em; }
+
+/* --- Spacing extras --- */
+.gap-2   { gap: 0.5rem; }
+.gap-3   { gap: 0.75rem; }
+.p-8     { padding: 2rem; }
+.py-5    { padding-top: 1.25rem; padding-bottom: 1.25rem; }
+.mt-auto { margin-top: auto; }
+
+/* --- Buttons --- */
+.btn-primary {
+    display: block;
+    background-color: var(--color-ink);
+    color: var(--color-parchment);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.875rem 1.5rem;
+    border: 2px solid var(--color-ink);
+    border-radius: 3px;
+    box-shadow: 3px 3px 0 rgba(28, 27, 24, 0.35);
+    cursor: pointer;
+    text-align: center;
+    letter-spacing: 0.02em;
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.btn-primary:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 rgba(28, 27, 24, 0.35);
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--color-card);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: 0.375rem 0.875rem;
+    border: 2px solid var(--color-ink);
+    border-radius: 3px;
+    box-shadow: 2px 2px 0 var(--color-ink);
+    cursor: pointer;
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+
+.btn-secondary:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+}
+
+/* --- Stamp tag decoration --- */
+.stamp-tag {
+    display: inline-block;
+    background-color: var(--color-stamp-red);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: 0.625rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 2px 10px;
+    border: 1.5px solid var(--color-ink);
+    transform: rotate(-1.5deg);
+}
+
+/* --- BingoSquare states --- */
+.sq-base {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    text-align: center;
+    border: 2px solid var(--color-ink);
+    border-radius: 3px;
+    min-height: 60px;
+    font-size: 0.65rem;
+    line-height: 1.2;
+    word-break: break-word;
+    hyphens: auto;
+    user-select: none;
+    font-family: var(--font-body);
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+    box-shadow: 2px 2px 0 var(--color-ink);
+}
+
+.sq-normal {
+    background-color: var(--color-card);
+    color: var(--color-ink);
+}
+
+.sq-normal:not(:disabled):hover {
+    background-color: var(--color-parchment);
+}
+
+.sq-normal:not(:disabled):active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+}
+
+.sq-marked {
+    background-color: var(--color-stamp-yellow);
+    color: var(--color-ink);
+    font-weight: 600;
+}
+
+.sq-free {
+    background-color: var(--color-ink);
+    color: var(--color-parchment);
+    font-weight: 700;
+    font-size: 0.75rem;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.sq-winning {
+    background-color: var(--color-stamp-red);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 3px 3px 0 var(--color-ink);
+    animation: sq-win-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+/* --- Keyframes --- */
+@keyframes sq-win-pop {
+    from { transform: scale(0.88); }
+    to   { transform: scale(1); }
+}
+
+@keyframes modal-pop {
+    from { transform: scale(0.82) translateY(24px); opacity: 0; }
+    to   { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes board-fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-modal-pop { animation: modal-pop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+.animate-board-in  { animation: board-fade-in 0.25s ease-out both; }

@@ -8,7 +8,11 @@
 
 @if (GameService.CurrentGameState == GameState.Start)
 {
-    <StartScreen OnStart="@GameService.StartGame" />
+    <StartScreen OnModeSelected="@HandleModeSelected" />
+}
+else if (GameService.CurrentGameState == GameState.ScavengerHunt)
+{
+    <ScavengerHuntScreen OnBack="@GameService.ResetGame" />
 }
 else
 {
@@ -30,6 +34,11 @@ else
     {
         await GameService.InitializeAsync();
         GameService.OnStateChanged += StateHasChanged;
+    }
+
+    private void HandleModeSelected(GameMode mode)
+    {
+        GameService.StartGame(mode);
     }
 
     public void Dispose()

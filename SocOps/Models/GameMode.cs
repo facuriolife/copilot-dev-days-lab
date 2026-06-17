@@ -1,9 +1,7 @@
 namespace SocOps.Models;
 
-public enum GameState
+public enum GameMode
 {
-    Start,
-    Playing,
     Bingo,
     ScavengerHunt
 }

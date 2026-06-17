@@ -1,0 +1,52 @@
+@using System.Linq
+@using SocOps.Models
+@using SocOps.Services
+
+<div class="paper-bg flex flex-col min-h-full">
+    <header class="bg-card flex items-center justify-between p-3 border-b-ink" style="min-height: 52px;">
+        <button @onclick="OnBack" class="btn-secondary">
+            &larr; Back
+        </button>
+        <h1 class="font-display font-black text-ink"
+            style="font-size: 1.25rem; letter-spacing: -0.01em;">Scavenger Hunt</h1>
+        <div style="width: 5rem;"></div>
+    </header>
+
+    <div class="p-4">
+        <div class="flex items-center justify-between mb-2">
+            <span class="uppercase tracking-widest text-ink-muted" style="font-size: 0.7rem;">progress</span>
+            <span class="text-ink">@CompletedCount / @Items.Count</span>
+        </div>
+        <progress class="w-full" value="@CompletedCount" max="@Items.Count"></progress>
+    </div>
+
+    <div class="flex flex-col gap-2 p-4">
+        @foreach (var item in Items)
+        {
+            <label class="card-paper shadow-cut-sm p-3" style="display: flex; gap: 0.75rem; align-items: center;">
+                <input type="checkbox" checked="@item.IsCompleted" @onchange="@(_ => ToggleItem(item.Id))" />
+                <span>@item.Text</span>
+            </label>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback OnBack { get; set; }
+
+    private List<ScavengerHuntItem> Items { get; set; } = new();
+
+    private int CompletedCount => Items.Count(item => item.IsCompleted);
+
+    protected override void OnInitialized()
+    {
+        Items = BingoLogicService.GenerateScavengerHuntItems();
+    }
+
+    private void ToggleItem(int itemId)
+    {
+        var item = Items.First(existingItem => existingItem.Id == itemId);
+        item.IsCompleted = !item.IsCompleted;
+    }
+}

@@ -7,7 +7,13 @@ public class BingoLogicService
 {
     private const int BOARD_SIZE = 5;
     private const int CENTER_INDEX = 12; // 5x5 grid, center is index 12 (row 2, col 2)
+    private const int QUESTION_COUNT = (BOARD_SIZE * BOARD_SIZE) - 1;
     private static readonly Random _random = new();
+
+    private static List<string> GetRandomQuestions(int count)
+    {
+        return ShuffleArray(Questions.QuestionsList).Take(count).ToList();
+    }
 
     /// <summary>
     /// Shuffle an array using Fisher-Yates algorithm
@@ -28,7 +34,7 @@ public class BingoLogicService
     /// </summary>
     public static List<BingoSquareData> GenerateBoard()
     {
-        var shuffledQuestions = ShuffleArray(Questions.QuestionsList).Take(24).ToList();
+        var shuffledQuestions = GetRandomQuestions(QUESTION_COUNT);
         var board = new List<BingoSquareData>();
 
         int questionIndex = 0;
@@ -46,18 +52,24 @@ public class BingoLogicService
             }
             else
             {
-                board.Add(new BingoSquareData
-                {
-                    Id = i,
-                    Text = shuffledQuestions[questionIndex],
-                    IsMarked = false,
-                    IsFreeSpace = false
-                });
+                board.Add(CreateQuestionSquare(i, shuffledQuestions[questionIndex]));
                 questionIndex++;
             }
         }
 
         return board;
+    }
+
+    public static List<ScavengerHuntItem> GenerateScavengerHuntItems()
+    {
+        return GetRandomQuestions(QUESTION_COUNT)
+            .Select((question, index) => new ScavengerHuntItem
+            {
+                Id = index,
+                Text = question,
+                IsCompleted = false
+            })
+            .ToList();
     }
 
     /// <summary>
@@ -152,5 +164,16 @@ public class BingoLogicService
     {
         if (line == null) return new HashSet<int>();
         return new HashSet<int>(line.Squares);
+    }
+
+    private static BingoSquareData CreateQuestionSquare(int id, string text)
+    {
+        return new BingoSquareData
+        {
+            Id = id,
+            Text = text,
+            IsMarked = false,
+            IsFreeSpace = false
+        };
     }
 }

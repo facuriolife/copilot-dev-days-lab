@@ -7,11 +7,12 @@ namespace SocOps.Services;
 public class BingoGameService
 {
     private const string STORAGE_KEY = "bingo-game-state";
-    private const int STORAGE_VERSION = 1;
+    private const int STORAGE_VERSION = 2;
 
     private readonly IJSRuntime _jsRuntime;
 
     public GameState CurrentGameState { get; private set; } = GameState.Start;
+    public GameMode CurrentGameMode { get; private set; } = GameMode.Bingo;
     public List<BingoSquareData> Board { get; private set; } = new();
     public BingoLine? WinningLine { get; private set; }
     public HashSet<int> WinningSquareIds => BingoLogicService.GetWinningSquareIds(WinningLine);
@@ -29,14 +30,23 @@ public class BingoGameService
         await LoadGameStateAsync();
     }
 
-    public void StartGame()
+    public void StartGame(GameMode mode = GameMode.Bingo)
     {
-        Board = BingoLogicService.GenerateBoard();
-        WinningLine = null;
-        CurrentGameState = GameState.Playing;
-        ShowBingoModal = false;
-        _ = SaveGameStateAsync(); // Fire and forget
-        NotifyStateChanged();
+        CurrentGameMode = mode;
+        ClearBingoStatus();
+
+        if (mode == GameMode.Bingo)
+        {
+            Board = BingoLogicService.GenerateBoard();
+            CurrentGameState = GameState.Playing;
+        }
+        else
+        {
+            Board = new();
+            CurrentGameState = GameState.ScavengerHunt;
+        }
+
+        PersistAndNotify();
     }
 
     public void HandleSquareClick(int squareId)
@@ -55,23 +65,32 @@ public class BingoGameService
             }
         }
 
-        _ = SaveGameStateAsync(); // Fire and forget
-        NotifyStateChanged();
+        PersistAndNotify();
     }
 
     public void ResetGame()
     {
         CurrentGameState = GameState.Start;
         Board = new();
-        WinningLine = null;
-        ShowBingoModal = false;
-        _ = SaveGameStateAsync(); // Fire and forget
-        NotifyStateChanged();
+        ClearBingoStatus();
+        PersistAndNotify();
     }
 
     public void DismissModal()
     {
         ShowBingoModal = false;
+        NotifyStateChanged();
+    }
+
+    private void ClearBingoStatus()
+    {
+        WinningLine = null;
+        ShowBingoModal = false;
+    }
+
+    private void PersistAndNotify()
+    {
+        _ = SaveGameStateAsync(); // Fire and forget
         NotifyStateChanged();
     }
 
@@ -88,6 +107,7 @@ public class BingoGameService
                 if (data != null && data.Version == STORAGE_VERSION)
                 {
                     CurrentGameState = data.GameState;
+                    CurrentGameMode = data.GameMode;
                     Board = data.Board;
                     WinningLine = data.WinningLine;
                 }
@@ -107,6 +127,7 @@ public class BingoGameService
             {
                 Version = STORAGE_VERSION,
                 GameState = CurrentGameState,
+                GameMode = CurrentGameMode,
                 Board = Board,
                 WinningLine = WinningLine
             };
@@ -123,6 +144,7 @@ public class BingoGameService
     {
         public int Version { get; set; }
         public GameState GameState { get; set; }
+        public GameMode GameMode { get; set; }
         public List<BingoSquareData> Board { get; set; } = new();
         public BingoLine? WinningLine { get; set; }
     }

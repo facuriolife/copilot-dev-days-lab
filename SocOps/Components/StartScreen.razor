@@ -5,34 +5,24 @@
         <h1 class="font-display font-black text-ink tracking-tight"
             style="font-size: 3.5rem; line-height: 1; margin-bottom: 0.25rem;">Soc Ops</h1>
         <p class="uppercase tracking-widest text-ink-muted"
-           style="font-size: 0.7rem; margin-bottom: 2rem;">Find your people. Get five in a row.</p>
+           style="font-size: 0.7rem; margin-bottom: 2rem;">Choose Bingo or Scavenger Hunt.</p>
 
         <div class="card-inset p-4" style="margin-bottom: 2rem;">
             <p class="uppercase tracking-widest text-ink-muted"
-               style="font-size: 0.65rem; font-weight: 600; margin-bottom: 0.75rem;">How to play</p>
-            <ol style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem;">
-                <li style="display: flex; gap: 0.75rem; font-size: 0.8rem; color: var(--color-ink);">
-                    <span style="min-width: 1.5rem; font-weight: 700; color: var(--color-ink-muted);">01</span>
-                    <span>Find people who match the questions</span>
-                </li>
-                <li style="display: flex; gap: 0.75rem; font-size: 0.8rem; color: var(--color-ink);">
-                    <span style="min-width: 1.5rem; font-weight: 700; color: var(--color-ink-muted);">02</span>
-                    <span>Tap a square when you find a match</span>
-                </li>
-                <li style="display: flex; gap: 0.75rem; font-size: 0.8rem; color: var(--color-ink);">
-                    <span style="min-width: 1.5rem; font-weight: 700; color: var(--color-ink-muted);">03</span>
-                    <span>Get 5 in a row to win!</span>
-                </li>
-            </ol>
+               style="font-size: 0.65rem; font-weight: 600; margin-bottom: 0.75rem;">Select mode</p>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <button @onclick="() => OnModeSelected.InvokeAsync(GameMode.Bingo)" class="btn-primary w-full">
+                    Bingo
+                </button>
+                <button @onclick="() => OnModeSelected.InvokeAsync(GameMode.ScavengerHunt)" class="btn-secondary w-full">
+                    Scavenger Hunt
+                </button>
+            </div>
         </div>
-
-        <button @onclick="OnStart" class="btn-primary w-full">
-            Start Game &rarr;
-        </button>
     </div>
 </div>
 
 @code {
     [Parameter]
-    public EventCallback OnStart { get; set; }
+    public EventCallback<GameMode> OnModeSelected { get; set; }
 }

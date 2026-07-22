@@ -45,7 +45,7 @@
     [Parameter]
     public EventCallback OnBack { get; set; }
 
-    private List<SocOps.Models.ScavengerItem> Items { get; set; } = new();
+    public List<SocOps.Models.ScavengerItem> Items { get; set; } = new();
 
     private int CompletedCount => Items.Count(i => i.IsCompleted);
     private int TotalCount => Items.Count;

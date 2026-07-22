@@ -4,6 +4,7 @@ using SocOps.Data;
 using Xunit;
 using Moq;
 using Microsoft.JSInterop;
+using Microsoft.JSInterop.Infrastructure;
 
 namespace SocOps.Tests.Integration;
 
@@ -14,8 +15,8 @@ public class ScavengerHuntIntegrationTests
         var mock = new Mock<IJSRuntime>();
         mock.Setup(m => m.InvokeAsync<string?>(It.IsAny<string>(), It.IsAny<object[]>()))
             .ReturnsAsync((string?)null);
-        mock.Setup(m => m.InvokeVoidAsync(It.IsAny<string>(), It.IsAny<object[]>()))
-            .Returns(ValueTask.CompletedTask);
+        mock.Setup(m => m.InvokeAsync<IJSVoidResult>(It.IsAny<string>(), It.IsAny<object[]>()))
+            .ReturnsAsync((IJSVoidResult)null!);
         return mock;
     }
 
@@ -115,7 +116,7 @@ public class ScavengerHuntIntegrationTests
         startGameMethod?.Invoke(service, new object[] { "Bingo" });
         var board1 = (List<BingoSquareData>?)typeof(BingoGameService)
             .GetProperty("Board")?.GetValue(service);
-        var board1Text = string.Join(",", board1?.Where(s => !s.IsFreeSpace).Select(s => s.Text) ?? new());
+        var board1Text = string.Join(",", board1?.Where(s => !s.IsFreeSpace).Select(s => s.Text) ?? Enumerable.Empty<string>());
 
         // Act - Reset and new Bingo game
         var resetMethod = typeof(BingoGameService).GetMethod("ResetGame");
@@ -123,7 +124,7 @@ public class ScavengerHuntIntegrationTests
         startGameMethod?.Invoke(service, new object[] { "Bingo" });
         var board2 = (List<BingoSquareData>?)typeof(BingoGameService)
             .GetProperty("Board")?.GetValue(service);
-        var board2Text = string.Join(",", board2?.Where(s => !s.IsFreeSpace).Select(s => s.Text) ?? new());
+        var board2Text = string.Join(",", board2?.Where(s => !s.IsFreeSpace).Select(s => s.Text) ?? Enumerable.Empty<string>());
 
         // Assert - Boards might be different (due to randomization) or same, but should both be valid
         Assert.NotEmpty(board1);

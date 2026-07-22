@@ -3,6 +3,7 @@ using SocOps.Services;
 using Xunit;
 using Moq;
 using Microsoft.JSInterop;
+using Microsoft.JSInterop.Infrastructure;
 
 namespace SocOps.Tests.Services;
 
@@ -13,8 +14,8 @@ public class BingoGameServiceTests
         var mock = new Mock<IJSRuntime>();
         mock.Setup(m => m.InvokeAsync<string?>(It.IsAny<string>(), It.IsAny<object[]>()))
             .ReturnsAsync((string?)null);
-        mock.Setup(m => m.InvokeVoidAsync(It.IsAny<string>(), It.IsAny<object[]>()))
-            .Returns(ValueTask.CompletedTask);
+        mock.Setup(m => m.InvokeAsync<IJSVoidResult>(It.IsAny<string>(), It.IsAny<object[]>()))
+            .ReturnsAsync((IJSVoidResult)null!);
         return mock;
     }
 

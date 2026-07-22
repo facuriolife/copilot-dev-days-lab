@@ -5,9 +5,10 @@ namespace SocOps.Services;
 
 public class BingoLogicService
 {
-    private const int BOARD_SIZE = 5;
-    private const int CENTER_INDEX = 12; // 5x5 grid, center is index 12 (row 2, col 2)
+    private const int BoardSize = 5;
+    private const int CenterIndex = 12; // 5x5 grid, center is index 12 (row 2, col 2)
     private static readonly Random _random = new();
+    private static readonly List<BingoLine> WinningLines = BuildWinningLines();
 
     /// <summary>
     /// Shuffle an array using Fisher-Yates algorithm
@@ -20,6 +21,7 @@ public class BingoLogicService
             int j = _random.Next(i + 1);
             (shuffled[i], shuffled[j]) = (shuffled[j], shuffled[i]);
         }
+
         return shuffled;
     }
 
@@ -28,33 +30,18 @@ public class BingoLogicService
     /// </summary>
     public static List<BingoSquareData> GenerateBoard()
     {
-        var shuffledQuestions = ShuffleArray(Questions.QuestionsList).Take(24).ToList();
-        var board = new List<BingoSquareData>();
+        var shuffledQuestions = ShuffleArray(Questions.QuestionsList)
+            .Take(BoardSize * BoardSize - 1)
+            .ToList();
 
-        int questionIndex = 0;
-        for (int i = 0; i < 25; i++)
+        var board = new List<BingoSquareData>(BoardSize * BoardSize);
+        var questionIndex = 0;
+
+        for (int i = 0; i < BoardSize * BoardSize; i++)
         {
-            if (i == CENTER_INDEX)
-            {
-                board.Add(new BingoSquareData
-                {
-                    Id = i,
-                    Text = Questions.FREE_SPACE,
-                    IsMarked = true,
-                    IsFreeSpace = true
-                });
-            }
-            else
-            {
-                board.Add(new BingoSquareData
-                {
-                    Id = i,
-                    Text = shuffledQuestions[questionIndex],
-                    IsMarked = false,
-                    IsFreeSpace = false
-                });
-                questionIndex++;
-            }
+            board.Add(i == CenterIndex
+                ? CreateSquare(i, Questions.FREE_SPACE, isFreeSpace: true, isMarked: true)
+                : CreateSquare(i, shuffledQuestions[questionIndex++], isFreeSpace: false, isMarked: false));
         }
 
         return board;
@@ -67,76 +54,68 @@ public class BingoLogicService
     {
         return board.Select(square =>
             square.Id == squareId && !square.IsFreeSpace
-                ? new BingoSquareData
-                {
-                    Id = square.Id,
-                    Text = square.Text,
-                    IsMarked = !square.IsMarked,
-                    IsFreeSpace = square.IsFreeSpace
-                }
+                ? CopySquare(square, !square.IsMarked)
                 : square
         ).ToList();
     }
 
-    /// <summary>
-    /// Get all possible winning lines
-    /// </summary>
-    private static List<BingoLine> GetWinningLines()
+    private static BingoSquareData CreateSquare(int id, string text, bool isFreeSpace, bool isMarked) => new()
     {
-        var lines = new List<BingoLine>();
+        Id = id,
+        Text = text,
+        IsMarked = isMarked,
+        IsFreeSpace = isFreeSpace
+    };
 
-        // Rows
-        for (int row = 0; row < BOARD_SIZE; row++)
+    private static BingoSquareData CopySquare(BingoSquareData square, bool isMarked) => new()
+    {
+        Id = square.Id,
+        Text = square.Text,
+        IsMarked = isMarked,
+        IsFreeSpace = square.IsFreeSpace
+    };
+
+    private static List<BingoLine> BuildWinningLines()
+    {
+        var lines = new List<BingoLine>(BoardSize * 2 + 2);
+
+        for (int row = 0; row < BoardSize; row++)
         {
-            var squares = new List<int>();
-            for (int col = 0; col < BOARD_SIZE; col++)
-            {
-                squares.Add(row * BOARD_SIZE + col);
-            }
-            lines.Add(new BingoLine { Type = "row", Index = row, Squares = squares });
+            lines.Add(BuildLine("row", row, GetRowSquares(row)));
         }
 
-        // Columns
-        for (int col = 0; col < BOARD_SIZE; col++)
+        for (int col = 0; col < BoardSize; col++)
         {
-            var squares = new List<int>();
-            for (int row = 0; row < BOARD_SIZE; row++)
-            {
-                squares.Add(row * BOARD_SIZE + col);
-            }
-            lines.Add(new BingoLine { Type = "column", Index = col, Squares = squares });
+            lines.Add(BuildLine("column", col, GetColumnSquares(col)));
         }
 
-        // Diagonal (top-left to bottom-right)
-        lines.Add(new BingoLine
-        {
-            Type = "diagonal",
-            Index = 0,
-            Squares = new List<int> { 0, 6, 12, 18, 24 }
-        });
-
-        // Diagonal (top-right to bottom-left)
-        lines.Add(new BingoLine
-        {
-            Type = "diagonal",
-            Index = 1,
-            Squares = new List<int> { 4, 8, 12, 16, 20 }
-        });
+        lines.Add(BuildLine("diagonal", 0, Enumerable.Range(0, BoardSize).Select(i => i * (BoardSize + 1))));
+        lines.Add(BuildLine("diagonal", 1, Enumerable.Range(0, BoardSize).Select(i => (i + 1) * (BoardSize - 1))));
 
         return lines;
     }
+
+    private static BingoLine BuildLine(string type, int index, IEnumerable<int> squares) => new()
+    {
+        Type = type,
+        Index = index,
+        Squares = squares.ToList()
+    };
+
+    private static List<int> GetRowSquares(int row) =>
+        Enumerable.Range(0, BoardSize).Select(col => row * BoardSize + col).ToList();
+
+    private static List<int> GetColumnSquares(int col) =>
+        Enumerable.Range(0, BoardSize).Select(row => row * BoardSize + col).ToList();
 
     /// <summary>
     /// Check if there's a bingo and return the winning line
     /// </summary>
     public static BingoLine? CheckBingo(List<BingoSquareData> board)
     {
-        var lines = GetWinningLines();
-
-        foreach (var line in lines)
+        foreach (var line in WinningLines)
         {
-            var isComplete = line.Squares.All(idx => board[idx].IsMarked);
-            if (isComplete)
+            if (line.Squares.All(idx => board[idx].IsMarked))
             {
                 return line;
             }
@@ -148,9 +127,6 @@ public class BingoLogicService
     /// <summary>
     /// Get the square IDs that are part of a winning line
     /// </summary>
-    public static HashSet<int> GetWinningSquareIds(BingoLine? line)
-    {
-        if (line == null) return new HashSet<int>();
-        return new HashSet<int>(line.Squares);
-    }
+    public static HashSet<int> GetWinningSquareIds(BingoLine? line) =>
+        line is null ? new() : new(line.Squares);
 }

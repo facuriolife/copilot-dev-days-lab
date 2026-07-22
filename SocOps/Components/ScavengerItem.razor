@@ -1,0 +1,23 @@
+@using SocOps.Models
+
+<button 
+    @onclick="OnToggle"
+    class="scavenger-item @(Item.IsCompleted ? "scavenger-item--completed" : "")">
+    <div class="scavenger-item__checkbox">
+        @if (Item.IsCompleted)
+        {
+            <span class="scavenger-item__checkmark">✓</span>
+        }
+    </div>
+    <span class="scavenger-item__text @(Item.IsCompleted ? "scavenger-item__text--completed" : "")">
+        @Item.Text
+    </span>
+</button>
+
+@code {
+    [Parameter]
+    public SocOps.Models.ScavengerItem Item { get; set; } = new();
+
+    [Parameter]
+    public EventCallback OnToggle { get; set; }
+}

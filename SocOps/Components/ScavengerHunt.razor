@@ -1,0 +1,72 @@
+@using SocOps.Data
+@using SocOps.Models
+
+<div class="paper-bg flex flex-col min-h-full">
+    <!-- Header -->
+    <header class="bg-card flex items-center justify-between p-3 border-b-ink" style="min-height: 52px;">
+        <button @onclick="OnBack" class="btn-secondary">
+            &larr; Back
+        </button>
+        <h1 class="font-display font-black text-ink"
+            style="font-size: 1.25rem; letter-spacing: -0.01em;">Treasure Hunt</h1>
+        <div style="width: 5rem;"></div>
+    </header>
+
+    <!-- Progress Section -->
+    <div class="scavenger-progress">
+        <div class="scavenger-progress__header">
+            <span class="text-ink-muted text-xs uppercase tracking-widest">Progress</span>
+            <span class="font-display font-black text-ink">@CompletedCount / @TotalCount</span>
+        </div>
+        <div class="scavenger-progress__bar">
+            <div class="scavenger-progress__fill" style="width: @ProgressPercentage%"></div>
+        </div>
+    </div>
+
+    <!-- Items List -->
+    <div class="scavenger-list">
+        @foreach (var item in Items)
+        {
+            <ScavengerItem Item="@item" OnToggle="@(() => ToggleItem(item))" />
+        }
+    </div>
+
+    <!-- Completion Message -->
+    @if (IsComplete && TotalCount > 0)
+    {
+        <div class="scavenger-completion">
+            <p class="scavenger-completion__emoji">🎉</p>
+            <p class="scavenger-completion__text">TREASURE FOUND!</p>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback OnBack { get; set; }
+
+    private List<SocOps.Models.ScavengerItem> Items { get; set; } = new();
+
+    private int CompletedCount => Items.Count(i => i.IsCompleted);
+    private int TotalCount => Items.Count;
+    private double ProgressPercentage => TotalCount > 0 ? (CompletedCount * 100.0 / TotalCount) : 0;
+    private bool IsComplete => CompletedCount == TotalCount && TotalCount > 0;
+
+    protected override void OnInitialized()
+    {
+        InitializeItems();
+    }
+
+    private void InitializeItems()
+    {
+        Items = Questions.QuestionsList
+            .Select((text, index) => new SocOps.Models.ScavengerItem { Id = index, Text = text })
+            .ToList();
+    }
+
+    private void ToggleItem(SocOps.Models.ScavengerItem item)
+    {
+        item.IsCompleted = !item.IsCompleted;
+    }
+}
+

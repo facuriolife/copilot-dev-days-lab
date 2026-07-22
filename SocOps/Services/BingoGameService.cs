@@ -7,7 +7,7 @@ namespace SocOps.Services;
 public class BingoGameService
 {
     private const string STORAGE_KEY = "bingo-game-state";
-    private const int STORAGE_VERSION = 1;
+    private const int STORAGE_VERSION = 2;
 
     private readonly IJSRuntime _jsRuntime;
 
@@ -29,14 +29,39 @@ public class BingoGameService
         await LoadGameStateAsync();
     }
 
-    public void StartGame()
+    public void StartGame(string mode = "Bingo")
+    {
+        ClearGameState();
+        
+        if (mode == "ScavengerHunt")
+        {
+            InitializeScavengerHunt();
+        }
+        else
+        {
+            InitializeBingo();
+        }
+        
+        _ = SaveGameStateAsync();
+        NotifyStateChanged();
+    }
+
+    private void InitializeBingo()
     {
         Board = BingoLogicService.GenerateBoard();
-        WinningLine = null;
         CurrentGameState = GameState.Playing;
+    }
+
+    private void InitializeScavengerHunt()
+    {
+        CurrentGameState = GameState.ScavengerHunt;
+    }
+
+    private void ClearGameState()
+    {
+        Board = new();
+        WinningLine = null;
         ShowBingoModal = false;
-        _ = SaveGameStateAsync(); // Fire and forget
-        NotifyStateChanged();
     }
 
     public void HandleSquareClick(int squareId)

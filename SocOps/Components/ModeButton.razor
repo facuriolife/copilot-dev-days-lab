@@ -1,0 +1,24 @@
+<button @onclick="() => OnSelected.InvokeAsync(Mode)" class="@ButtonClass w-full" style="text-align: left;">
+    <span style="display: block; font-weight: 700;">@Icon @Label</span>
+    <span style="display: block; font-size: 0.7rem; font-weight: 400; opacity: 0.8; margin-top: 0.25rem;">@Description</span>
+</button>
+
+@code {
+    [Parameter]
+    public string Mode { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Icon { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Description { get; set; } = string.Empty;
+
+    [Parameter]
+    public string ButtonClass { get; set; } = "btn-primary";
+
+    [Parameter]
+    public EventCallback<string> OnSelected { get; set; }
+}

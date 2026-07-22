@@ -4,5 +4,6 @@ public enum GameState
 {
     Start,
     Playing,
-    Bingo
+    Bingo,
+    ScavengerHunt
 }

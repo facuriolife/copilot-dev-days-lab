@@ -6,23 +6,29 @@
 
 <PageTitle>Soc Ops - Social Bingo</PageTitle>
 
-@if (GameService.CurrentGameState == GameState.Start)
+@switch (GameService.CurrentGameState)
 {
-    <StartScreen OnStart="@GameService.StartGame" />
-}
-else
-{
-    <GameScreen
-        Board="@GameService.Board"
-        WinningSquareIds="@GameService.WinningSquareIds"
-        HasBingo="@(GameService.CurrentGameState == GameState.Bingo)"
-        OnSquareClick="@GameService.HandleSquareClick"
-        OnReset="@GameService.ResetGame" />
+    case GameState.Start:
+        <StartScreen OnModeSelected="@HandleModeSelected" />
+        break;
+    
+    case GameState.ScavengerHunt:
+        <ScavengerHunt OnBack="@GameService.ResetGame" />
+        break;
+    
+    default:
+        <GameScreen
+            Board="@GameService.Board"
+            WinningSquareIds="@GameService.WinningSquareIds"
+            HasBingo="@(GameService.CurrentGameState == GameState.Bingo)"
+            OnSquareClick="@GameService.HandleSquareClick"
+            OnReset="@GameService.ResetGame" />
 
-    @if (GameService.ShowBingoModal)
-    {
-        <BingoModal OnDismiss="@GameService.DismissModal" />
-    }
+        @if (GameService.ShowBingoModal)
+        {
+            <BingoModal OnDismiss="@GameService.DismissModal" />
+        }
+        break;
 }
 
 @code {
@@ -30,6 +36,11 @@ else
     {
         await GameService.InitializeAsync();
         GameService.OnStateChanged += StateHasChanged;
+    }
+
+    private void HandleModeSelected(string mode)
+    {
+        GameService.StartGame(mode);
     }
 
     public void Dispose()

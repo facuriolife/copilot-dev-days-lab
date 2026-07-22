@@ -9,30 +9,29 @@
 
         <div class="card-inset p-4" style="margin-bottom: 2rem;">
             <p class="uppercase tracking-widest text-ink-muted"
-               style="font-size: 0.65rem; font-weight: 600; margin-bottom: 0.75rem;">How to play</p>
-            <ol style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem;">
-                <li style="display: flex; gap: 0.75rem; font-size: 0.8rem; color: var(--color-ink);">
-                    <span style="min-width: 1.5rem; font-weight: 700; color: var(--color-ink-muted);">01</span>
-                    <span>Find people who match the questions</span>
-                </li>
-                <li style="display: flex; gap: 0.75rem; font-size: 0.8rem; color: var(--color-ink);">
-                    <span style="min-width: 1.5rem; font-weight: 700; color: var(--color-ink-muted);">02</span>
-                    <span>Tap a square when you find a match</span>
-                </li>
-                <li style="display: flex; gap: 0.75rem; font-size: 0.8rem; color: var(--color-ink);">
-                    <span style="min-width: 1.5rem; font-weight: 700; color: var(--color-ink-muted);">03</span>
-                    <span>Get 5 in a row to win!</span>
-                </li>
-            </ol>
+               style="font-size: 0.65rem; font-weight: 600; margin-bottom: 0.75rem;">Select Mode</p>
+            <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <ModeButton
+                    Mode="Bingo"
+                    Icon="🎲"
+                    Label="BINGO"
+                    Description="5x5 grid • Get 5 in a row"
+                    ButtonClass="btn-primary"
+                    OnSelected="@OnModeSelected" />
+                
+                <ModeButton
+                    Mode="ScavengerHunt"
+                    Icon="🔍"
+                    Label="TREASURE HUNT"
+                    Description="Checklist • Find them all"
+                    ButtonClass="btn-secondary"
+                    OnSelected="@OnModeSelected" />
+            </div>
         </div>
-
-        <button @onclick="OnStart" class="btn-primary w-full">
-            Start Game &rarr;
-        </button>
     </div>
 </div>
 
 @code {
     [Parameter]
-    public EventCallback OnStart { get; set; }
+    public EventCallback<string> OnModeSelected { get; set; }
 }
